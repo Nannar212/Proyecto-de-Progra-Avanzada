@@ -1,17 +1,21 @@
 ---
 import { perfil } from '../data/perfil';
+import { ruta } from '../utils/rutas';
 
-const ruta = Astro.url.pathname.replace(/\/$/, '') || '/';
+// `ruta` es la función importada, así que la ruta actual va con otro nombre.
+const rutaActual = Astro.url.pathname;
+const enProyectos = rutaActual.includes('/proyectos');
+
 const enlaces = [
-  { href: '/#proyectos', texto: 'Proyectos' },
-  { href: '/#sobre-mi', texto: 'Sobre mí' },
-  { href: '/#contacto', texto: 'Contacto' },
+  { href: ruta('/#proyectos'), texto: 'Proyectos', activo: enProyectos },
+  { href: ruta('/#sobre-mi'), texto: 'Sobre mí', activo: false },
+  { href: ruta('/#contacto'), texto: 'Contacto', activo: false },
 ];
 ---
 
 <header class="cabecera">
   <div class="contenedor barra">
-    <a class="marca" href="/" aria-label="Inicio">
+    <a class="marca" href={ruta("/")} aria-label="Inicio">
       <span class="marca-inicial">{perfil.iniciales}</span>
       <span class="marca-nombre">{perfil.nombre}</span>
     </a>
@@ -21,7 +25,7 @@ const enlaces = [
         {
           enlaces.map((e) => (
             <li>
-              <a href={e.href} aria-current={ruta === e.href ? 'page' : undefined}>
+              <a href={e.href} aria-current={e.activo ? 'page' : undefined}>
                 {e.texto}
               </a>
             </li>

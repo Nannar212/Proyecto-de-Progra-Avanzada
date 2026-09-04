@@ -66,9 +66,41 @@ src/
 public/            favicon y archivos estáticos (aquí va el CV)
 ```
 
-## Publicarlo
+## Publicarlo en GitHub Pages
 
-El sitio es estático, así que sirve cualquier hosting. Con GitHub Pages hay que
-descomentar `site` y `base` en `astro.config.mjs` y apuntarlos a este repo. Con
-Netlify o Vercel basta con conectar el repositorio; el comando de build es
-`npm run build` y la carpeta de salida es `dist`.
+Ya está configurado. Cada push a `main` reconstruye y publica el sitio en
+<https://nannar212.github.io/Proyecto-de-Progra-Avanzada/>.
+
+**Hay un paso manual que solo se hace una vez:** en GitHub, entra a
+`Settings` → `Pages` y en **Source** elige **GitHub Actions** (no "Deploy from a
+branch"). Sin eso el workflow falla al desplegar.
+
+Después de eso:
+
+```bash
+git add .
+git commit -m "Portafolio con despliegue a GitHub Pages"
+git push
+```
+
+El progreso se ve en la pestaña **Actions** del repo. También se puede lanzar a
+mano desde ahí con el botón *Run workflow*.
+
+### Cómo funciona
+
+- **`.github/workflows/deploy.yml`** — instala dependencias, corre `npm run build`
+  y sube `dist/` a Pages.
+- **`astro.config.mjs`** — define `base: '/Proyecto-de-Progra-Avanzada'`, porque el
+  sitio no vive en la raíz del dominio sino dentro de la carpeta del repo.
+- **`src/utils/rutas.ts`** — la función `ruta()` le pega ese `base` a cada enlace
+  interno. Por eso los enlaces se escriben `href={ruta('/proyectos')}` y no
+  `href="/proyectos"`: escritos a mano se romperían al publicar.
+
+> Si cambias el nombre del repo, actualiza `base` en `astro.config.mjs`.
+> Si algún día lo mueves a un repo `nannar212.github.io`, borra la línea `base`.
+
+### Otros hostings
+
+El sitio es estático, así que también sirve Netlify o Vercel: conecta el
+repositorio, comando de build `npm run build`, carpeta de salida `dist`. En ese
+caso quita el `base` de `astro.config.mjs`.

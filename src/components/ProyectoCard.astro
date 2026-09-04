@@ -1,5 +1,6 @@
 ---
 import type { Proyecto } from '../data/proyectos';
+import { ruta } from '../utils/rutas';
 
 interface Props {
   proyecto: Proyecto;
@@ -9,7 +10,7 @@ const { proyecto } = Astro.props;
 ---
 
 <article class="tarjeta" data-curso={proyecto.curso}>
-  <a class="enlace-cubierta" href={`/proyectos/${proyecto.slug}`}>
+  <a class="enlace-cubierta" href={ruta(`/proyectos/${proyecto.slug}`)}>
     <span class="sr-only">Ver {proyecto.titulo}</span>
   </a>
 

@@ -1,0 +1,60 @@
+name: Desplegar a GitHub Pages
+
+on:
+  # Cada push a main vuelve a publicar el sitio.
+  push:
+    branches: [main]
+  # Y también se puede lanzar a mano desde la pestaña Actions.
+  workflow_dispatch:
+
+# Permisos que necesita el despliegue oficial de Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Si haces varios push seguidos, deja terminar el despliegue en curso
+# y encola el siguiente en vez de cancelarlo a medias.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  construir:
+    name: Construir el sitio
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Construir con Astro
+        run: npm run build
+
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+
+      - name: Subir el sitio construido
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  desplegar:
+    name: Publicar
+    needs: construir
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.despliegue.outputs.page_url }}
+    steps:
+      - name: Desplegar a GitHub Pages
+        id: despliegue
+        uses: actions/deploy-pages@v4

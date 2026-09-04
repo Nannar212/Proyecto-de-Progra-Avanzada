@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { proyectos } from '../../data/proyectos';
+import { ruta } from '../../utils/rutas';
 
 export function getStaticPaths() {
   return proyectos.map((proyecto, indice) => ({
@@ -18,7 +19,7 @@ const { proyecto, siguiente } = Astro.props;
 <Layout titulo={`${proyecto.titulo} — Portafolio`} descripcion={proyecto.resumen}>
   <article class="seccion">
     <div class="contenedor angosto">
-      <a class="volver" href="/#proyectos">← Volver a proyectos</a>
+      <a class="volver" href={ruta("/#proyectos")}>← Volver a proyectos</a>
 
       <header>
         <p class="etiqueta">{proyecto.curso} · {proyecto.periodo}</p>
@@ -90,7 +91,7 @@ const { proyecto, siguiente } = Astro.props;
         siguiente.slug !== proyecto.slug && (
           <nav class="siguiente" aria-label="Siguiente proyecto">
             <span class="etiqueta">Siguiente proyecto</span>
-            <a href={`/proyectos/${siguiente.slug}`}>{siguiente.titulo} →</a>
+            <a href={ruta(`/proyectos/${siguiente.slug}`)}>{siguiente.titulo} →</a>
           </nav>
         )
       }
