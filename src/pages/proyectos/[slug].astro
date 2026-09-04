@@ -1,0 +1,191 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { proyectos } from '../../data/proyectos';
+
+export function getStaticPaths() {
+  return proyectos.map((proyecto, indice) => ({
+    params: { slug: proyecto.slug },
+    props: {
+      proyecto,
+      siguiente: proyectos[(indice + 1) % proyectos.length],
+    },
+  }));
+}
+
+const { proyecto, siguiente } = Astro.props;
+---
+
+<Layout titulo={`${proyecto.titulo} — Portafolio`} descripcion={proyecto.resumen}>
+  <article class="seccion">
+    <div class="contenedor angosto">
+      <a class="volver" href="/#proyectos">← Volver a proyectos</a>
+
+      <header>
+        <p class="etiqueta">{proyecto.curso} · {proyecto.periodo}</p>
+        <h1>
+          <span class="icono" aria-hidden="true">{proyecto.icono ?? '📁'}</span>
+          {proyecto.titulo}
+        </h1>
+        <p class="resumen apagado">{proyecto.resumen}</p>
+
+        <div class="acciones">
+          {
+            proyecto.repo && (
+              <a class="boton" href={proyecto.repo} target="_blank" rel="noopener noreferrer">
+                Ver código
+              </a>
+            )
+          }
+          {
+            proyecto.demo && (
+              <a class="boton fantasma" href={proyecto.demo} target="_blank" rel="noopener noreferrer">
+                Ver demo
+              </a>
+            )
+          }
+        </div>
+      </header>
+
+      <dl class="ficha">
+        <div>
+          <dt>Curso</dt>
+          <dd>{proyecto.curso}</dd>
+        </div>
+        <div>
+          <dt>Periodo</dt>
+          <dd>{proyecto.periodo}</dd>
+        </div>
+        <div>
+          <dt>Equipo</dt>
+          <dd>{proyecto.equipo ? proyecto.equipo.join(', ') : 'Proyecto individual'}</dd>
+        </div>
+      </dl>
+
+      <section class="bloque">
+        <h2>Descripción</h2>
+        {proyecto.descripcion.map((parrafo) => <p>{parrafo}</p>)}
+      </section>
+
+      {
+        proyecto.aportes && proyecto.aportes.length > 0 && (
+          <section class="bloque">
+            <h2>Lo que hice</h2>
+            <ul class="aportes">
+              {proyecto.aportes.map((a) => (
+                <li>{a}</li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      <section class="bloque">
+        <h2>Tecnologías</h2>
+        <ul class="chips">
+          {proyecto.tecnologias.map((t) => <li class="chip">{t}</li>)}
+        </ul>
+      </section>
+
+      {
+        siguiente.slug !== proyecto.slug && (
+          <nav class="siguiente" aria-label="Siguiente proyecto">
+            <span class="etiqueta">Siguiente proyecto</span>
+            <a href={`/proyectos/${siguiente.slug}`}>{siguiente.titulo} →</a>
+          </nav>
+        )
+      }
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .angosto { max-width: 46rem; }
+
+  .volver {
+    display: inline-block;
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+
+  .volver:hover { text-decoration: underline; }
+
+  h1 {
+    font-size: clamp(1.9rem, 4.5vw, 2.7rem);
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+  }
+
+  .icono { font-size: 0.9em; }
+
+  .resumen {
+    font-size: 1.05rem;
+    max-width: 58ch;
+  }
+
+  .acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 1.5rem;
+  }
+
+  .ficha {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1.25rem;
+    margin: 2.5rem 0 0;
+    padding: 1.25rem;
+    background: var(--fondo-alt);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+  }
+
+  .ficha div { display: flex; flex-direction: column; gap: 0.15rem; }
+
+  .ficha dt {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--texto-suave);
+  }
+
+  .ficha dd { margin: 0; font-size: 0.95rem; }
+
+  .bloque { margin-top: 2.75rem; }
+
+  .bloque h2 {
+    font-size: 1.15rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--borde);
+    margin-bottom: 1.1rem;
+  }
+
+  .aportes {
+    margin: 0;
+    padding-left: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .aportes li::marker { color: var(--acento); }
+
+  .siguiente {
+    margin-top: 4rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--borde);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .siguiente a {
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .siguiente a:hover { text-decoration: underline; }
+</style>

@@ -1,0 +1,27 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ListaProyectos from '../../components/ListaProyectos.astro';
+import { proyectos } from '../../data/proyectos';
+---
+
+<Layout titulo="Proyectos — Portafolio" descripcion="Todos mis proyectos universitarios.">
+  <section class="seccion">
+    <div class="contenedor">
+      <p class="etiqueta">Portafolio completo</p>
+      <h1>Proyectos</h1>
+      <p class="apagado intro">
+        Todo lo que he construido durante la carrera, agrupado por curso.
+      </p>
+
+      <div class="lista">
+        <ListaProyectos proyectos={proyectos} filtros />
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .intro { max-width: 52ch; }
+  .lista { margin-top: 2.5rem; }
+  h1 { font-size: clamp(2rem, 4.5vw, 2.8rem); }
+</style>

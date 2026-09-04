@@ -1,0 +1,102 @@
+---
+import ProyectoCard from './ProyectoCard.astro';
+import type { Proyecto } from '../data/proyectos';
+
+interface Props {
+  proyectos: Proyecto[];
+  /** Muestra los botones para filtrar por curso. */
+  filtros?: boolean;
+}
+
+const { proyectos, filtros = false } = Astro.props;
+const cursos = [...new Set(proyectos.map((p) => p.curso))].sort();
+---
+
+{
+  filtros && cursos.length > 1 && (
+    <div class="filtros" role="group" aria-label="Filtrar proyectos por curso">
+      <button type="button" class="filtro activo" data-filtro="todos" aria-pressed="true">
+        Todos
+      </button>
+      {cursos.map((c) => (
+        <button type="button" class="filtro" data-filtro={c} aria-pressed="false">
+          {c}
+        </button>
+      ))}
+    </div>
+  )
+}
+
+<div class="rejilla" id="rejilla-proyectos">
+  {proyectos.map((p) => <ProyectoCard proyecto={p} />)}
+</div>
+
+<p class="vacio" hidden>No hay proyectos de ese curso todavía.</p>
+
+<script>
+  const botones = document.querySelectorAll<HTMLButtonElement>('.filtro');
+  const tarjetas = document.querySelectorAll<HTMLElement>('#rejilla-proyectos > [data-curso]');
+  const vacio = document.querySelector<HTMLElement>('.vacio');
+
+  botones.forEach((boton) => {
+    boton.addEventListener('click', () => {
+      const filtro = boton.dataset.filtro;
+
+      botones.forEach((b) => {
+        const activo = b === boton;
+        b.classList.toggle('activo', activo);
+        b.setAttribute('aria-pressed', String(activo));
+      });
+
+      let visibles = 0;
+      tarjetas.forEach((t) => {
+        const mostrar = filtro === 'todos' || t.dataset.curso === filtro;
+        t.hidden = !mostrar;
+        if (mostrar) visibles++;
+      });
+
+      if (vacio) vacio.hidden = visibles > 0;
+    });
+  });
+</script>
+
+<style>
+  .filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .filtro {
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--borde);
+    background: var(--fondo-alt);
+    color: var(--texto-suave);
+    font-size: 0.85rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .filtro:hover { color: var(--texto); border-color: var(--acento); }
+
+  .filtro.activo {
+    background: var(--acento);
+    border-color: var(--acento);
+    color: #fff;
+  }
+
+  .rejilla {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .vacio {
+    margin-top: 2rem;
+    text-align: center;
+    color: var(--texto-suave);
+  }
+</style>

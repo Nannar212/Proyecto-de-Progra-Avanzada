@@ -1,0 +1,140 @@
+---
+import { perfil } from '../data/perfil';
+
+const ruta = Astro.url.pathname.replace(/\/$/, '') || '/';
+const enlaces = [
+  { href: '/#proyectos', texto: 'Proyectos' },
+  { href: '/#sobre-mi', texto: 'Sobre mí' },
+  { href: '/#contacto', texto: 'Contacto' },
+];
+---
+
+<header class="cabecera">
+  <div class="contenedor barra">
+    <a class="marca" href="/" aria-label="Inicio">
+      <span class="marca-inicial">{perfil.iniciales}</span>
+      <span class="marca-nombre">{perfil.nombre}</span>
+    </a>
+
+    <nav aria-label="Principal">
+      <ul>
+        {
+          enlaces.map((e) => (
+            <li>
+              <a href={e.href} aria-current={ruta === e.href ? 'page' : undefined}>
+                {e.texto}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <button id="cambiar-tema" type="button" aria-label="Cambiar tema" title="Cambiar tema">
+      <svg class="icono-sol" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+      </svg>
+      <svg class="icono-luna" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<script>
+  const boton = document.getElementById('cambiar-tema');
+  boton?.addEventListener('click', () => {
+    const raiz = document.documentElement;
+    const nuevo = raiz.dataset.tema === 'oscuro' ? 'claro' : 'oscuro';
+    raiz.dataset.tema = nuevo;
+    try {
+      localStorage.setItem('tema', nuevo);
+    } catch {
+      /* modo privado: el tema simplemente no se recuerda */
+    }
+  });
+</script>
+
+<style>
+  .cabecera {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--fondo) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--borde);
+  }
+
+  .barra {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: 4rem;
+  }
+
+  .marca {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-right: auto;
+    color: var(--texto);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .marca-inicial {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 9px;
+    background: var(--acento);
+    color: #fff;
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+  }
+
+  nav ul {
+    display: flex;
+    gap: 1.4rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  nav a {
+    color: var(--texto-suave);
+    text-decoration: none;
+    font-size: 0.92rem;
+  }
+
+  nav a:hover,
+  nav a[aria-current='page'] {
+    color: var(--texto);
+  }
+
+  button {
+    display: grid;
+    place-items: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 9px;
+    border: 1px solid var(--borde);
+    background: var(--fondo-alt);
+    color: var(--texto);
+    cursor: pointer;
+  }
+
+  button:hover { border-color: var(--acento); color: var(--acento); }
+
+  .icono-luna { display: none; }
+  :global([data-tema='oscuro']) .icono-luna { display: block; }
+  :global([data-tema='oscuro']) .icono-sol { display: none; }
+
+  @media (max-width: 560px) {
+    .marca-nombre { display: none; }
+    nav ul { gap: 1rem; }
+    nav a { font-size: 0.85rem; }
+  }
+</style>

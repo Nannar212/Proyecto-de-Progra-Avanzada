@@ -1,0 +1,201 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ListaProyectos from '../components/ListaProyectos.astro';
+import { perfil, habilidades } from '../data/perfil';
+import { proyectos, cursos } from '../data/proyectos';
+---
+
+<Layout>
+  <!-- ───────────── Portada ───────────── -->
+  <section class="portada">
+    <div class="contenedor">
+      <p class="etiqueta">{perfil.titulo} · {perfil.universidad}</p>
+      <h1>
+        Hola, soy <span class="resaltado">{perfil.nombre.split(' ')[0]}</span>.<br />
+        Estos son mis proyectos de la U.
+      </h1>
+      <p class="intro apagado">{perfil.descripcion}</p>
+
+      <div class="acciones">
+        <a class="boton" href="#proyectos">Ver proyectos</a>
+        <a class="boton fantasma" href={`mailto:${perfil.email}`}>Escríbeme</a>
+        {
+          perfil.cv && (
+            <a class="boton fantasma" href={perfil.cv} target="_blank" rel="noopener noreferrer">
+              Descargar CV
+            </a>
+          )
+        }
+      </div>
+
+      <dl class="numeros">
+        <div>
+          <dt>Proyectos</dt>
+          <dd>{proyectos.length}</dd>
+        </div>
+        <div>
+          <dt>Cursos</dt>
+          <dd>{cursos.length}</dd>
+        </div>
+        <div>
+          <dt>Tecnologías</dt>
+          <dd>{new Set(proyectos.flatMap((p) => p.tecnologias)).size}</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ───────────── Proyectos ───────────── -->
+  <section class="seccion" id="proyectos">
+    <div class="contenedor">
+      <div class="seccion-titulo">
+        <div>
+          <p class="etiqueta">Portafolio</p>
+          <h2>Proyectos de la universidad</h2>
+        </div>
+        <p class="apagado sub">Filtra por curso para ver el trabajo de cada materia.</p>
+      </div>
+
+      <ListaProyectos proyectos={proyectos} filtros />
+    </div>
+  </section>
+
+  <!-- ───────────── Sobre mí ───────────── -->
+  <section class="seccion alterna" id="sobre-mi">
+    <div class="contenedor dos-columnas">
+      <div>
+        <p class="etiqueta">Sobre mí</p>
+        <h2>Un poco de contexto</h2>
+        <p class="apagado">{perfil.descripcion}</p>
+        <p class="apagado">
+          Actualmente estudio en {perfil.universidad}, desde {perfil.ubicacion}. Cada proyecto de
+          esta página salió de un curso distinto, así que reflejan cómo he ido avanzando: desde lo
+          más básico de la programación hasta estructuras de datos y aplicaciones completas.
+        </p>
+      </div>
+
+      <div>
+        <p class="etiqueta">Habilidades</p>
+        <div class="habilidades">
+          {
+            habilidades.map((grupo) => (
+              <div class="grupo">
+                <h3>{grupo.categoria}</h3>
+                <ul class="chips">
+                  {grupo.items.map((i) => (
+                    <li class="chip">{i}</li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────── Contacto ───────────── -->
+  <section class="seccion" id="contacto">
+    <div class="contenedor contacto">
+      <p class="etiqueta">Contacto</p>
+      <h2>¿Trabajamos juntos?</h2>
+      <p class="apagado">
+        Estoy abierto a prácticas, proyectos y colaboraciones. La forma más rápida de encontrarme es
+        por correo.
+      </p>
+      <div class="acciones">
+        <a class="boton" href={`mailto:${perfil.email}`}>{perfil.email}</a>
+        <a class="boton fantasma" href={perfil.github} target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+        {
+          perfil.linkedin && (
+            <a class="boton fantasma" href={perfil.linkedin} target="_blank" rel="noopener noreferrer">
+              LinkedIn
+            </a>
+          )
+        }
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .portada {
+    padding-block: clamp(3.5rem, 11vw, 7rem) clamp(2.5rem, 7vw, 4rem);
+    background:
+      radial-gradient(60rem 30rem at 15% -10%, var(--acento-suave), transparent 65%);
+  }
+
+  .resaltado {
+    color: var(--acento);
+  }
+
+  .intro {
+    max-width: 56ch;
+    font-size: 1.05rem;
+  }
+
+  .acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 1.75rem;
+  }
+
+  .numeros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2.5rem;
+    margin: 3rem 0 0;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--borde);
+  }
+
+  .numeros div { display: flex; flex-direction: column-reverse; }
+
+  .numeros dt {
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--texto-suave);
+  }
+
+  .numeros dd {
+    margin: 0;
+    font-size: 1.9rem;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+  }
+
+  .sub { margin: 0; font-size: 0.9rem; max-width: 32ch; }
+
+  .alterna {
+    background: var(--fondo-alt);
+    border-block: 1px solid var(--borde);
+  }
+
+  .dos-columnas {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: clamp(2rem, 6vw, 4rem);
+  }
+
+  @media (max-width: 800px) {
+    .dos-columnas { grid-template-columns: 1fr; }
+  }
+
+  .habilidades {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+  }
+
+  .grupo h3 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+  }
+
+  .contacto { max-width: 46rem; }
+</style>
