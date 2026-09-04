@@ -41,6 +41,10 @@ jobs:
 
       - name: Configurar Pages
         uses: actions/configure-pages@v5
+        with:
+          # Activa Pages en el repo si todavía no lo está, para no depender
+          # de haberlo puesto a mano en Settings.
+          enablement: true
 
       - name: Subir el sitio construido
         uses: actions/upload-pages-artifact@v3

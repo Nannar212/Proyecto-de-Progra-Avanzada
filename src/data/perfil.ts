@@ -18,7 +18,7 @@ export const perfil = {
   github: 'https://github.com/Nannar212',
   linkedin: '', // TODO: pega tu URL de LinkedIn (déjalo vacío si no tienes)
   cv: '', // TODO: ruta a tu CV, por ejemplo '/cv-joel-molina.pdf' dentro de public/
-} as const;
+};
 
 /** Tecnologías que quieres mostrar en la sección de habilidades. */
 export const habilidades: { categoria: string; items: string[] }[] = [

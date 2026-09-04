@@ -24,7 +24,7 @@ export interface Proyecto {
   equipo?: string[];
   repo?: string;
   demo?: string;
-  /** Si es true, aparece en la portada. */
+  /** Marca opcional por si luego quieres una sección de destacados. */
   destacado?: boolean;
   /** Emoji o inicial para la portada de la tarjeta. */
   icono?: string;
@@ -105,7 +105,21 @@ export const proyectos: Proyecto[] = [
   },
 ];
 
+// Dos proyectos con el mismo `slug` generarían la misma URL y uno pisaría al
+// otro. Mejor fallar aquí, al construir, con un mensaje claro.
+const repetidos = proyectos
+  .map((p) => p.slug)
+  .filter((slug, i, todos) => todos.indexOf(slug) !== i);
+
+if (repetidos.length > 0) {
+  throw new Error(
+    `Hay slugs repetidos en proyectos.ts: ${[...new Set(repetidos)].join(', ')}. ` +
+      'Cada proyecto necesita un slug único porque de ahí sale su URL.',
+  );
+}
+
 /** Lista de cursos únicos, para los filtros. */
 export const cursos = [...new Set(proyectos.map((p) => p.curso))].sort();
 
+/** Proyectos marcados con `destacado: true`. */
 export const destacados = proyectos.filter((p) => p.destacado);
