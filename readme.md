@@ -68,23 +68,21 @@ public/            favicon y archivos estáticos (aquí va el CV)
 
 ## Publicarlo en GitHub Pages
 
-Ya está configurado. Cada push a `main` reconstruye y publica el sitio en
-<https://nannar212.github.io/Proyecto-de-Progra-Avanzada/>.
+Ya está funcionando: **<https://nannar212.github.io/Proyecto-de-Progra-Avanzada/>**
 
-**Hay un paso manual que solo se hace una vez:** en GitHub, entra a
-`Settings` → `Pages` y en **Source** elige **GitHub Actions** (no "Deploy from a
-branch"). Sin eso el workflow falla al desplegar.
-
-Después de eso:
+Cada push a `main` reconstruye y republica el sitio solo. No hay que hacer nada más:
 
 ```bash
 git add .
-git commit -m "Portafolio con despliegue a GitHub Pages"
+git commit -m "Actualizo mis proyectos"
 git push
 ```
 
-El progreso se ve en la pestaña **Actions** del repo. También se puede lanzar a
-mano desde ahí con el botón *Run workflow*.
+El progreso se ve en la pestaña **Actions** del repo (tarda ~1 minuto). También se
+puede lanzar a mano desde ahí con el botón *Run workflow*.
+
+Si algún día el despliegue falla con un error de permisos, revisa que en
+`Settings` → `Pages` la opción **Source** siga en **GitHub Actions**.
 
 ### Cómo funciona
 
